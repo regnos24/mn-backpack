@@ -1,0 +1,46 @@
+= Mnbackpack
+
+== Getting Started
+
+1. Download the gem from intero.beanstalkapp.com
+
+	git clone git@intero.beanstalkapp.com:/mnbackpack.git
+
+2. Add the engine into your app by adding it to your Gemfile.
+
+	gem 'mnbackpack', :path => 'PATH_TO/mnbackpack'
+	
+	bundle install
+	
+3. Add the engine in your routes config/routes.rb
+
+	mount Mnbackpack::Engine => '/backpack', :as => 'backpack'
+
+4. Run the migration script.
+	
+	rake mnbackpack:install:migrations
+
+5. Install the moch data from medianet xml (optional)
+
+	rake mnbackpack:load_data
+
+6. Install the Yaml configurations.
+
+	rails g mnbackpack:install
+
+7. Update config/mnbackpack.yml with your api keys from medianet
+
+== Using the Engine
+
+= Search
+
+* To do a single search
+
++ Mnbackpack::Search.find(:artist, {name: 'Nirvana'}) +
+
+* To do a many search
+
++ Mnbackpack::Search.find(:all, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]}) +
+
+
+
