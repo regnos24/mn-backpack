@@ -30,17 +30,33 @@
 
 7. Update config/mnbackpack.yml with your api keys from medianet
 
-== Using the Engine
+= Using the Engine
 
-= Search
+== Search
 
-* To do a single search
+<b>To do a single search</b>
 
-+ Mnbackpack::Search.find(:artist, {name: 'Nirvana'}) +
+<tt>Mnbackpack::Search.find(:artist, {name: 'Nirvana'})</tt>
 
-* To do a many search
+<b>To do a many search</b>
 
-+ Mnbackpack::Search.find(:all, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]}) +
+<tt>Mnbackpack::Search.find(:all, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]})</tt>
+
+[<b>types</b>]	
+	album, artist, tracks
+	
+[<b>album::options</b>]
+
+	Keyword, Artist, Include, Explicit, Genre ,mainArtistOnly, Page, PageSize, Title
+		
+[<b>artist::options</b>]
+	
+	Keyword, Name, Genre, Page, PageSize
+	
+[<b>tracks::options</b>]
+	
+	Album, Artist, IncludeExplicit, Keyword, Genre, Page, PageSize, Title
+
 
 
 
