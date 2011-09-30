@@ -54,11 +54,11 @@ class Mnbackpack::Request
     end
   end
   
-  def many(requests)
+  def many(requests, hash = false)
     if requests[:search].nil?
       raise "Please supply a Hash with a nested :search Array for :Search ex: .find(:all ,{search: [{method: 'artist',keyword: 'Beatles'}})"
     end
-    sendback = []
+    (hash) ? sendback = {} : sendback = []
     hydra = Typhoeus::Hydra.new
     requests[:search].each do |r|
       unless r.fetch(:method)
@@ -75,11 +75,24 @@ class Mnbackpack::Request
       puts qstr
       request = Typhoeus::Request.new(qstr)
       request.on_complete do |response|
-       sendback << self.handle_response(response)
+        if sendback.is_a? Array
+          sendback << self.handle_response(response)
+        else
+          sendback[r[:method]] = self.handle_response(response)
+        end
       end
       hydra.queue request
     end
     hydra.run
     sendback
+  end
+  
+  def all(requests)
+    h = {:search => []}
+    %w(artists albums tracks).each do |m|
+      h[:search] << {method: m}.merge(self.filter(requests))
+    end
+    results = self.many(h, true)
+    results
   end
 end

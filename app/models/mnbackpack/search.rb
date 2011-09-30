@@ -16,7 +16,8 @@ class Mnbackpack::Search
           when 'artists', :artists then result = find_many(options)
           when 'geo', 'geolocation', :geo then result = find_one('search.getgeolocation', options)
           when 'contents', 'content', :content then result = find_one('search.contentmatch', options)
-          when :all, :many, 'all','many'   then result = find_many(options)
+          when :many, 'many' then result = find_many(options)
+          when :all, 'all' then result = find_all(options)
           else  raise "#{args.first} Method not allowed"
       end
       result
@@ -34,6 +35,12 @@ class Mnbackpack::Search
     def find_many(options)
       mn = Mnbackpack::Request.new
       mn.many(options)
+      #instaniate_record(record)
+    end
+    
+    def find_all(options)
+      mn = Mnbackpack::Request.new
+      mn.all(options)
       #instaniate_record(record)
     end
     
