@@ -49,9 +49,8 @@ class Mnbackpack::Request
   end
   def single(search_type, args={})
     request = self.create({:method => search_type, :format => "json"}.merge(self.filter(args)))
-    Rails.logger.error request
     begin
-      response = Typhoeus::Request.get(request)
+      response = Typhoeus::Request.get(request,:cache_timeout => 1.day)
       self.handle_response(response)
     rescue => e
       Rails.logger.error e
