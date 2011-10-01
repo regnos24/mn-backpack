@@ -27,12 +27,16 @@ class Mnbackpack::Request
   end
   
   def handle_response(response)
-    if response.code == 200
-      JSON.parse(response.body)
-    elsif response.code == 404
-      nil
+    if response.is_a? Hash
+      response
     else
-      raise response.body
+      if response.code == 200
+        JSON.parse(response.body)
+      elsif response.code == 404
+        nil
+      else
+        raise response.body
+      end
     end
   end
   
@@ -60,6 +64,12 @@ class Mnbackpack::Request
     end
     (hash) ? sendback = {} : sendback = []
     hydra = Typhoeus::Hydra.new
+    hydra.cache_getter do |request|
+      Rails.cache.read(request.cache_key) rescue nil
+    end
+    hydra.cache_setter do |request|
+       Rails.cache.write(request.cache_key,self.handle_response(request.response),expires_in: request.cache_timeout)
+    end
     requests[:search].each do |r|
       unless r.fetch(:method)
         raise "Please supply the criteria you want to search for as the first element ex: {:method => 'tracks', :other => 'yeah'} #{r.first.class}"
@@ -72,8 +82,7 @@ class Mnbackpack::Request
         else raise "No Method found, please use [tracks, albums, artists, geo]"
       end
       qstr= self.create({:method => type, :format => "json"}.merge(self.filter(r)))
-      puts qstr
-      request = Typhoeus::Request.new(qstr)
+      request = Typhoeus::Request.new(qstr,cache_timeout: 1.day)
       request.on_complete do |response|
         if sendback.is_a? Array
           sendback << self.handle_response(response)
