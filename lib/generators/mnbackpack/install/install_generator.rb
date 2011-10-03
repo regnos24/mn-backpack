@@ -9,6 +9,10 @@ module Mnbackpack
          say_status("INFO", "Please modify the /config/mnbackpack.yml with your medianet API credentials")
          say_status("INFO", "Please remember to mount your engine")
        end
+       def create_initializer
+         say_status("MOVING", "Creating a mnbackpack initializer in your app")
+         copy_file 'mnbackpack_load.rb', 'config/initializers/mnbackpack_load.rb'
+       end
     end
   end
 end
