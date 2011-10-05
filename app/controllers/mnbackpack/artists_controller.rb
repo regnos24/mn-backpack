@@ -39,7 +39,7 @@ module Mnbackpack
     def albums
       begin
         albums = Mnbackpack::Artist.albums(params[:id])
-        #render json: albums
+        render json: albums
       rescue => e
         render :json => {response: e.message}
       end
