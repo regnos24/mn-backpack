@@ -1,6 +1,20 @@
 module Mnbackpack
   class SearchController < ApplicationController
     def index
+        artists = Mnbackpack::Artist.search do
+          fulltext params[:search]
+        end
+        tracks = Mnbackpack::Component.search do
+          fulltext params[:search]
+          with(:component_type_id, 3)
+        end
+        albums = Mnbackpack::Component.search do
+          fulltext params[:search]
+          with(:component_type_id, 2)
+        end
+        @artists = artists.results
+        @albums = albums.results
+        @tracks = tracks.results
       respond_to do |format|
         format.html # index.html.erb
       end
@@ -25,6 +39,5 @@ module Mnbackpack
         render :json => {response: e.message}
       end
     end
-    
   end
 end

@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Chris Songer"]
   s.email       = ["csonger@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = "Gem to handle MediaNet content delivery and procurement"
+  s.description = "Gem to handle MediaNet content delivery and procurement"
 
   s.rubyforge_project = "mnbackpack"
 
@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'typhoeus'
   s.add_dependency 'addressable'
   s.add_dependency 'ruby-hmac'
+  s.add_dependency 'sunspot_rails'
 end

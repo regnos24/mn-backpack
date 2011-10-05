@@ -1,10 +1,11 @@
 require 'addressable/uri'
 require 'typhoeus'
+require 'hmac-md5'
 
 class Mnbackpack::Request
   attr_accessor :query_filters, :request
   def initialize
-    @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit)
+    @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit MnetId mnetid mainArtistOnly mainartistonly)
   end
   
   def create(arg_hash, signature=false)
@@ -21,8 +22,8 @@ class Mnbackpack::Request
       end
       uri.site + "?" + uri.query
     rescue => e
-      Rails.logger.error e.message
-      Rails.logger.error e.backtrace
+      puts e.message
+      puts e.backtrace
     end
   end
   
@@ -47,13 +48,27 @@ class Mnbackpack::Request
     end
     send_args
   end
+  
   def single(search_type, args={})
-    request = self.create({:method => search_type, :format => "json"}.merge(self.filter(args)))
     begin
-      response = Typhoeus::Request.get(request,:cache_timeout => 1.day)
-      self.handle_response(response)
+      hydra = Typhoeus::Hydra.new
+      hydra.cache_getter do |request|
+        Rails.cache.read(request.cache_key) rescue nil
+      end
+      hydra.cache_setter do |request|
+         Rails.cache.write(request.cache_key,self.handle_response(request.response),expires_in: request.cache_timeout)
+      end
+      qstr= self.create({:method => search_type, :format => "json"}.merge(self.filter(args)), args[:signature])
+      request = Typhoeus::Request.new(qstr,:cache_timeout => 2.hours)
+      request.on_complete do |response|
+        self.handle_response(response)
+      end
+      hydra.queue request
+      hydra.run
+      request.handled_response
     rescue => e
-      Rails.logger.error e
+      puts e.inspect
+      puts e.backtrace
     end
   end
   
@@ -81,7 +96,7 @@ class Mnbackpack::Request
         else raise "No Method found, please use [tracks, albums, artists, geo]"
       end
       qstr= self.create({:method => type, :format => "json"}.merge(self.filter(r)))
-      request = Typhoeus::Request.new(qstr,cache_timeout: 1.day)
+      request = Typhoeus::Request.new(qstr,cache_timeout: 2.hours)
       request.on_complete do |response|
         if sendback.is_a? Array
           sendback << self.handle_response(response)
