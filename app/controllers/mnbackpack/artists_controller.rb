@@ -26,11 +26,22 @@ module Mnbackpack
     
     def search
       begin
+        words = params[:keyword].split(/\s+/) 
+        prefix, full_words = words.pop, words.join(' ') 
         search = Mnbackpack::Artist.search do
-          fulltext params[:keyword]
+          adjust_solr_params do |sunspot_params|
+            sunspot_params[:rows] = 8
+          end
+          keywords(full_words) 
+          text_fields do 
+            with(:name).starting_with(prefix)
+            with(:sort_name).starting_with(prefix) 
+          end
+          facet :component_id
         end
         artists = search.results
-        render json: artists
+        component = search.facet(:component_id)
+        render json: component
       rescue => e
         render :json => {response: e.message}
       end

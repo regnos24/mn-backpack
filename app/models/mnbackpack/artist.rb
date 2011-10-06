@@ -10,6 +10,7 @@ class Mnbackpack::Artist < ActiveRecord::Base
   searchable do 
     text :name, :sort_name
     integer :id
+    integer :component_id, :multiple => true, :references => Mnbackpack::Component
   end
   
   def self.albums(mnetid)
