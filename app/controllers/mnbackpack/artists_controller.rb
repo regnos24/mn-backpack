@@ -1,5 +1,6 @@
 module Mnbackpack
   class ArtistsController < ApplicationController
+    layout false
     def index
       begin
         search = Mnbackpack::Artist.search do
@@ -26,7 +27,7 @@ module Mnbackpack
     
     def search
       begin
-        words = params[:keyword].split(/\s+/) 
+        words = params[:keyword].downcase.split(/\s+/) 
         prefix, full_words = words.pop, words.join(' ') 
         search = Mnbackpack::Artist.search do
           adjust_solr_params do |sunspot_params|
@@ -37,11 +38,12 @@ module Mnbackpack
             with(:name).starting_with(prefix)
             with(:sort_name).starting_with(prefix) 
           end
-          facet :component_id
         end
-        artists = search.results
-        component = search.facet(:component_id)
-        render json: component
+        @artists = search.results
+        respond_to do |format|
+          format.html # index.html.erb
+          format.json { render json: @artists }
+        end
       rescue => e
         render :json => {response: e.message}
       end

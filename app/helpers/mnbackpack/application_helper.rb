@@ -1,2 +1,0 @@
-module Mnbackpack::ApplicationHelper
-end
