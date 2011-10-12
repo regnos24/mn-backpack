@@ -16,19 +16,28 @@
 
 	mount Mnbackpack::Engine => '/backpack', :as => 'backpack'
 
-4. Run the migration script.
+4. Run the migration scripts.
 	
 	rake mnbackpack:install:migrations
+	rake db:migrate
 
-5. Install the moch data from medianet xml (optional)
-
-	rake mnbackpack:load_data
-
-6. Install the Yaml configurations.
+5. Install the Yaml configurations.
 
 	rails g mnbackpack:install
 
-7. Update config/mnbackpack.yml with your api keys from medianet
+6. Update config/mnbackpack.yml with your api keys from medianet
+
+7. Start the solr::search server.
+
+	rake sunspot:solr:start
+
+8. Install the moch data from medianet xml
+
+	rake mnbackpack:load_data
+	
+9. Index the data you loaded.
+
+	rake mnbackpack:sunspot:reindex
 
 = Using the Engine
 
@@ -40,7 +49,13 @@
 
 <b>To do a many search</b>
 
-<tt>Mnbackpack::Search.find(:all, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]})</tt>
+<tt>Mnbackpack::Search.find(:many, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]})</tt>
+
+<b>To do an all search</b>
+<tt>Mnbackpack::Search.find(:all, {"IncludeExplicit" => false, :pagesize => 50, :keyword => "#{session[:search_text]}"})</tt>
+
+<b>To find a single album with tracks (Pass in mnet_id)</b>
+<tt>Mnbackpack::Album.albums(12345678)</tt>
 
 [<b>types</b>]	
 	album, artist, tracks
