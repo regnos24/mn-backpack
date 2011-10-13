@@ -6,6 +6,6 @@ class Mnbackpack::Track
   end
   def self.locations(mnetids)
     mn = Mnbackpack::Request.new
-    mn.single('Track.Get', {"MnetIds" => "#{mnetids.join('|'), signature: true}"})
+    mn.single('Track.Get', {"MnetIds" => "#{mnetids.join('|')}", signature: true})
   end
 end
