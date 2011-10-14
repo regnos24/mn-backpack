@@ -14,6 +14,15 @@ module Mnbackpack
       end
     end
     
+    def show
+      begin
+        @track = Mnbackpack::Track.get(params[:id])
+        render json: @track
+      rescue   => e
+        render :json => {response: e.message}
+      end
+    end
+    
     def search
       begin
         words = params[:keyword].downcase.split(/\s+/) 
