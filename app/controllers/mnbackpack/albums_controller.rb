@@ -14,6 +14,15 @@ module Mnbackpack
       end
     end
     
+    def show
+      begin
+        @album = Mnbackpack::Album.get(params[:id])
+        render json: @album
+      rescue   => e
+        render :json => {response: e.message}
+      end
+    end
+    
     def search
       begin
         words = params[:keyword].downcase.split(/\s+/) 
