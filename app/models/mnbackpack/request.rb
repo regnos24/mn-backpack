@@ -3,9 +3,10 @@ require 'typhoeus'
 require 'hmac-md5'
 
 class Mnbackpack::Request
-  attr_accessor :query_filters, :request
+  attr_accessor :query_filters, :request, :cache
   def initialize
     @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit MnetId mnetid mainArtistOnly mainartistonly)
+    @cache = 24.hours
   end
   
   def create(arg_hash, signature=false)
@@ -59,7 +60,7 @@ class Mnbackpack::Request
          Rails.cache.write(request.cache_key,self.handle_response(request.response),expires_in: request.cache_timeout)
       end
       qstr= self.create({:method => search_type, :format => "json"}.merge(self.filter(args)), args[:signature])
-      request = Typhoeus::Request.new(qstr,:cache_timeout => 2.hours)
+      request = Typhoeus::Request.new(qstr,:cache_timeout => @cache)
       request.on_complete do |response|
         self.handle_response(response)
       end
@@ -96,7 +97,7 @@ class Mnbackpack::Request
         else raise "No Method found, please use [tracks, albums, artists, geo]"
       end
       qstr= self.create({:method => type, :format => "json"}.merge(self.filter(r)))
-      request = Typhoeus::Request.new(qstr,cache_timeout: 2.hours)
+      request = Typhoeus::Request.new(qstr,cache_timeout: @cache)
       request.on_complete do |response|
         if sendback.is_a? Array
           sendback << self.handle_response(response)

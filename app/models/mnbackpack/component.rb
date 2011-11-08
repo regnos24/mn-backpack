@@ -9,6 +9,7 @@ class Mnbackpack::Component < ActiveRecord::Base
   has_many :labels, :class_name => 'Mnbackpack::Label'
   has_one :retail_prices, :class_name => 'Mnbackpack::RetailPrice'
   has_many :component_parents, :class_name => 'Mnbackpack::ComponentParent', :primary_key => 'id', :foreign_key => 'parent_component_id'
+  has_many :metadatas, :class_name => 'Mnbackpack::Metadata'
   
   searchable do 
     text :title

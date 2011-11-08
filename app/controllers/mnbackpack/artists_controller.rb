@@ -66,5 +66,9 @@ module Mnbackpack
         render :json => {response: e.message}
       end
     end
+    
+    def featured
+      
+    end
   end
 end
