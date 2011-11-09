@@ -16,7 +16,7 @@ class Mnbackpack::Request
       arg_hash[:apikey] = mnet["token"]
       if signature
         uri.query_values = arg_hash
-        arg_hash[:signature] = HMAC::MD5.new(uri.query).hexdigest
+        arg_hash[:signature] =  OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'),mnet["secret"],uri.query)
         uri.query_values = arg_hash
       else
         @request = uri.query_values = arg_hash
