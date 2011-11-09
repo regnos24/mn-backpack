@@ -1,7 +1,7 @@
 class Mnbackpack::Purchase
-  def submit
+  def submit (client_ip)
     mn = Mnbackpack::Request.new
-    qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "69.139.123.246"}, true)
+    qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{client_ip}"}, true)
     request = Typhoeus::Request.post(qstr,
                                     :params => {
                                       "User" => {
