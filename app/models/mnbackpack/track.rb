@@ -8,4 +8,8 @@ class Mnbackpack::Track
     mn = Mnbackpack::Request.new
     mn.single('Track.Get', {"MnetIds" => "#{mnetids.join('|')}", signature: true})
   end
+  def self.all(options={})
+    mn = Mnbackpack::Request.new
+    mn.single('search.gettracks', options)
+  end
 end
