@@ -2,7 +2,7 @@ class Mnbackpack::Purchase
   def submit (user=nil, cart=nil)
     raise 'User does not have a profile.' if user.profile.nil?
     raise 'Cart does not contain any tracks' if cart.nil?
-    
+    Rails.logger.info cart.inspect
     mn = Mnbackpack::Request.new
     qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{user.current_sign_in_ip}"}, true)
     raw_xml = <<EOF
@@ -21,21 +21,26 @@ class Mnbackpack::Purchase
                             </BillingAddress>
                     </User>
                     <Items>
-                            <LineItem>
-                                     <MnetId>521335</MnetId>
-                                     <ItemType>Track</ItemType>
-                                     <Format>MP3</Format>
-                                     <Price>0.99</Price>
-                                     <Tax>0.00</Tax>
-                            </LineItem>
-                    </Items>
-                    <TotalCharge>0.99</TotalCharge>
-            </UseBalance>
 EOF
-      Rails.logger.info "*"*50
-      Rails.logger.error user.inspect
-      Rails.logger.error raw_xml
-      Rails.logger.info "*"*50
+        totalprice = 0
+        cart.line_items.each do |c|
+           raw_xml += "
+           <LineItem>
+                    <MnetId>#{c.mnetid}</MnetId>
+                    <ItemType>Track</ItemType>
+                    <Format>MP3</Format>
+                    <Price>#{c.price}</Price>
+                    <Tax>0.00</Tax>
+           </LineItem>"
+           totalprice += c.price
+        end
+        totalprice = sprintf("%.2f", totalprice)
+          raw_xml += "               
+                    </Items>
+                    <TotalCharge>#{totalprice}</TotalCharge>
+            </UseBalance>"
+    Rails.logger.info "*"*50
+    Rails.logger.info raw_xml
         request = Typhoeus::Request.new(qstr,
                                             :body          => raw_xml,
                                             :method        => :post,

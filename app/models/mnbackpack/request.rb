@@ -11,7 +11,14 @@ class Mnbackpack::Request
   
   def create(arg_hash, signature=false)
     begin
-      (Rails.env == "production") ? mnet = MN_CONFIG["production"] : mnet = MN_CONFIG["development"]
+      case Rails.env
+      when 'production' 
+        mnet = MN_CONFIG["production"]
+      when 'staging' 
+        mnet = MN_CONFIG["staging"]
+      else 
+        mnet = MN_CONFIG["development"]
+      end
       uri = Addressable::URI.parse(mnet["url"])
       arg_hash[:apikey] = mnet["token"]
       if signature
