@@ -5,7 +5,7 @@ require 'hmac-md5'
 class Mnbackpack::Request
   attr_accessor :query_filters, :request, :cache
   def initialize
-    @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit MnetId mnetid mainArtistOnly mainartistonly)
+    @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit MnetId mnetid mainArtistOnly mainartistonly Username username)
     @cache = 24.hours
    puts ':::::::::::: MNBACKPACK Loaded into ' + Rails.env + ' Mode :::::::::::::'
   end

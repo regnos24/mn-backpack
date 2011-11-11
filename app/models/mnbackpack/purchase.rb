@@ -1,27 +1,42 @@
 class Mnbackpack::Purchase
   def submit (user=nil, cart=nil)
-    raise 'User does not have a profile.' if user.profile.nil?
-    raise 'Cart does not contain any tracks' if cart.nil?
-    Rails.logger.info cart.inspect
+    raise 'Cart does not contain any tracks' if cart.blank?
+    
     mn = Mnbackpack::Request.new
     qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{user.current_sign_in_ip}"}, true)
-    raw_xml = <<EOF
-    <UseBalance xmlns="http://api.mndigital.com">
-                <User>
-                            <FirstName>#{user.profile.firstname}</FirstName>
-                            <LastName>#{user.profile.lastname}</LastName>
-                            <EmailAddress>#{user.email}</EmailAddress>
-                            <BillingAddress>
-                                     <AddressLine1>#{user.profile.address1}</AddressLine1>
-                                     <AddressLine2>#{user.profile.address2}</AddressLine2>
-                                     <City>#{user.profile.city}</City>
-                                     <State>#{user.profile.state}</State>
-                                     <PostalCode>#{user.profile.zipcode}</PostalCode>
-                                     <Country>#{user.profile.country}</Country>
-                            </BillingAddress>
-                    </User>
-                    <Items>
-EOF
+    raw_xml = "<UseBalance xmlns=\"http://api.mndigital.com\">"
+    unless(intero.nil?)
+      raw_xml += "<User>
+                <FirstName>#{user.profile.firstname}</FirstName>
+                <LastName>#{user.profile.lastname}</LastName>
+                <EmailAddress>#{user.email}</EmailAddress>
+                <BillingAddress>
+                         <AddressLine1>#{user.profile.address1}</AddressLine1>
+                         <AddressLine2>#{user.profile.address2}</AddressLine2>
+                         <City>#{user.profile.city}</City>
+                         <State>#{user.profile.state}</State>
+                         <PostalCode>#{user.profile.zipcode}</PostalCode>
+                         <Country>#{user.profile.country}</Country>
+                </BillingAddress>
+        </User>
+        <Items>"
+    else
+      raw_xml += "<User>
+                <FirstName>Intero</FirstName>
+                <LastName>Alliance</LastName>
+                <EmailAddress>devteam-intero@interoconnect.com</EmailAddress>
+                <BillingAddress>
+                         <AddressLine1>725 Cool Springs Boulevard</AddressLine1>
+                         <AddressLine2>Suite 230</AddressLine2>
+                         <City>Franklin</City>
+                         <State>TN</State>
+                         <PostalCode>37067</PostalCode>
+                         <Country>US</Country>
+                </BillingAddress>
+        </User>
+        <Items>"
+    end
+
         totalprice = 0
         cart.line_items.each do |c|
            raw_xml += "
@@ -39,15 +54,12 @@ EOF
                     </Items>
                     <TotalCharge>#{totalprice}</TotalCharge>
             </UseBalance>"
-    Rails.logger.info "*"*50
-    Rails.logger.info raw_xml
         request = Typhoeus::Request.new(qstr,
                                             :body          => raw_xml,
                                             :method        => :post,
                                             :headers       => {"Content-Type" => "application/xml"},
                                             :timeout       => 100000, # milliseconds
                                             :cache_timeout => 60, # seconds
-                                            # :params => {:content => "#{xml}"}
                                             )
         hydra = Typhoeus::Hydra.new
         hydra.queue(request)
