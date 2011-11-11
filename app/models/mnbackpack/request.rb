@@ -7,7 +7,7 @@ class Mnbackpack::Request
   def initialize
     @query_filters = %w(artist Artist genre Genre title Title keyword Keyword rights Rights name Name PageSize pagesize Page page CC cc Addr addr ipString ipstring ISRC isrc AMGID amgid IncludeExplicit include_explicit MnetId mnetid mainArtistOnly mainartistonly)
     @cache = 24.hours
-    Rails.logger.info ':::::::::::: MNBACKPACK Loaded into ' + Rails.env + ' Mode :::::::::::::'
+   puts ':::::::::::: MNBACKPACK Loaded into ' + Rails.env + ' Mode :::::::::::::'
   end
   
   def create(arg_hash, signature=false)
