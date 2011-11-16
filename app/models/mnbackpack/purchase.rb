@@ -5,7 +5,7 @@ class Mnbackpack::Purchase
     mn = Mnbackpack::Request.new
     qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{user.current_sign_in_ip}"}, true)
     raw_xml = "<UseBalance xmlns=\"http://api.mndigital.com\">"
-    unless(intero.nil?)
+    if(user.profile)
       raw_xml += "<User>
                 <FirstName>#{user.profile.firstname}</FirstName>
                 <LastName>#{user.profile.lastname}</LastName>

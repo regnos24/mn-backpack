@@ -29,6 +29,7 @@ class Mnbackpack::Request
       else
         @request = uri.query_values = arg_hash
       end
+      puts ':::::::::::: Medianet Request ' + uri.site + "?" + uri.query + ' :::::::::::::'
       uri.site + "?" + uri.query
     rescue => e
       puts e.message
@@ -45,7 +46,7 @@ class Mnbackpack::Request
       elsif response.code == 404
         nil
       else
-        raise response.body
+        raise response.inspect
       end
     end
   end
