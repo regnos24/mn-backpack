@@ -29,7 +29,7 @@ class Mnbackpack::Request
       else
         @request = uri.query_values = arg_hash
       end
-      puts ':::::::::::: Medianet Request ' + uri.site + "?" + uri.query + ' :::::::::::::'
+      puts '<<< Medianet Request ' + uri.site + "?" + uri.query + ' >>>'
       uri.site + "?" + uri.query
     rescue => e
       puts e.message

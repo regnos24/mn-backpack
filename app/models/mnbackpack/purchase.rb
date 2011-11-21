@@ -3,7 +3,7 @@ class Mnbackpack::Purchase
     raise 'Cart does not contain any tracks' if cart.blank?
     
     mn = Mnbackpack::Request.new
-    qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{user.current_sign_in_ip}"}, true)
+    qstr = mn.create({"Method" => "Purchase.UseBalance", "SiteDomain" => "www.award.fm", "UserIP" => "#{user.current_sign_in_ip}", :format => "json"}, true)
     raw_xml = "<UseBalance xmlns=\"http://api.mndigital.com\">"
     if(user.profile)
       raw_xml += "<User>
