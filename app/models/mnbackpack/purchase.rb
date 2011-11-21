@@ -42,7 +42,7 @@ class Mnbackpack::Purchase
            raw_xml += "
            <LineItem>
                     <MnetId>#{c.mnetid}</MnetId>
-                    <ItemType>Track</ItemType>
+                    <ItemType>#{c.media_type}</ItemType>
                     <Format>MP3</Format>
                     <Price>#{c.price}</Price>
                     <Tax>0.00</Tax>
