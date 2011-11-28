@@ -23,5 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'typhoeus'
   s.add_dependency 'addressable'
   s.add_dependency 'ruby-hmac'
+  s.add_dependency 'sunspot'
+  s.add_dependency 'sunspot_solr'
   s.add_dependency 'sunspot_rails'
 end
