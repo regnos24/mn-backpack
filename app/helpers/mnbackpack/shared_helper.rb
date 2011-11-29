@@ -1,5 +1,6 @@
 module Mnbackpack
   module SharedHelper
+    require 'hmac-md5'
     def album_pic(id, size=nil)
       path = sprintf('%09d', id).scan(/.../).join('/')
       case size
@@ -13,6 +14,10 @@ module Mnbackpack
           ftype = 's'
         end
         image_tag "http://images.mndigital.com/albums/#{path}/#{ftype}.jpeg"
+    end
+    
+    def generate_widget_secret(order_id)
+      OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'),mnet["secret"],"#{order_id}," + mnet["widget"])
     end
   end
 end
