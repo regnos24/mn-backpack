@@ -17,7 +17,7 @@ module Mnbackpack
     end
     
     def generate_widget_secret(order_id)
-      OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'),mnet["secret"],"#{order_id}," + mnet["widget"])
+      OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'),MN_CONFIG[Rails.env]["secret"],"#{order_id}," + MN_CONFIG[Rails.env]["widget"])
     end
   end
 end

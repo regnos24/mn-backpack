@@ -1,6 +1,10 @@
 development:
   url: "http://ie-api.mndigital.com"
   token: MN_IE_SECRET_TOKEN
+  secret: MN_IE_SECRET
+  widget: MN_IE_WIDGET
 production:
   url: "http://api.mndigital.com"
   token: MN_PROD_SECRET_TOKEN
+  secret: MN_PROD_SECRET
+  widget: MN_PROD_WIDGET
