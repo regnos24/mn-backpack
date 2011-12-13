@@ -65,4 +65,17 @@ class Mnbackpack::Purchase < Mnbackpack::Request
         response = request.response
         response
   end
+  
+  def get_order(order_id)
+    raise 'Please supply an order id' if order_id.blank?
+    qstr = create({"Method" => "Purchase.GetOrder", :format => "json", "OrderID" => order_id.to_s}, true)
+    response = Typhoeus::Request.get(qstr)
+  end
+  
+  def get_download_locations(order_id)
+    raise 'Please supply an order id' if order_id.blank?
+    qstr = create({"Method" => "Cart.GetDownloadLocations", :format => "json", "OrderID" => order_id.to_s}, true)
+    response = Typhoeus::Request.get(qstr)
+  end
+  
 end
