@@ -1,4 +1,4 @@
-class Mnbackpack::Search
+class Mnbackpack::Search < Mnbackpack::Request
   
   def persisted?
     false
@@ -6,18 +6,19 @@ class Mnbackpack::Search
   
   class << self
     def find(*args)
+      no_cache = false
       options = extract_options_from_args!(args)
       case args.first
-          when 'track', :track then result = find_one('search.gettracks', options)
-          when :tracks, 'tracks' then result = find_many(options)
-          when 'album', :album then result = find_one('search.getalbums', options)
-          when 'albums', :albums then  result = find_many(options)
-          when 'artist', :artist then result = find_one('search.getartists', options)
-          when 'artists', :artists then result = find_many(options)
-          when 'geo', 'geolocation', :geo then result = find_one('search.getgeolocation', options)
-          when 'contents', 'content', :content then result = find_one('search.contentmatch', options)
-          when :many, 'many' then result = find_many(options)
-          when :all, 'all' then result = find_all(options)
+          when 'track', :track then result = find_one('search.gettracks', options, no_cache)
+          when :tracks, 'tracks' then result = find_many(options, no_cache)
+          when 'album', :album then result = find_one('search.getalbums', options, no_cache)
+          when 'albums', :albums then  result = find_many(options, no_cache)
+          when 'artist', :artist then result = find_one('search.getartists', options, no_cache)
+          when 'artists', :artists then result = find_many(options, no_cache)
+          when 'geo', 'geolocation', :geo then result = find_one('search.getgeolocation', options, no_cache)
+          when 'contents', 'content', :content then result = find_one('search.contentmatch', options, no_cache)
+          when :many, 'many' then result = find_many(options, no_cache)
+          when :all, 'all' then result = find_all(options, no_cache)
           else  raise "#{args.first} Method not allowed"
       end
       result
@@ -26,19 +27,19 @@ class Mnbackpack::Search
     #      #       response = Typhoeus::Request.get(request)
     end
     
-    def find_one(type,options)
+    def find_one(type,options,no_cache=false)
       #instaniate_record(record)
       mn = Mnbackpack::Request.new
       mn.single(type, options)
     end
     
-    def find_many(options)
+    def find_many(options,no_cache=false)
       mn = Mnbackpack::Request.new
       mn.many(options)
       #instaniate_record(record)
     end
     
-    def find_all(options)
+    def find_all(options,no_cache=false)
       mn = Mnbackpack::Request.new
       mn.all(options)
       #instaniate_record(record)
