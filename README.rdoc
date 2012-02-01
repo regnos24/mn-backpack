@@ -41,21 +41,8 @@
 
 = Using the Engine
 
+
 == Search
-
-<b>To do a single search</b>
-
-<tt>Mnbackpack::Search.find(:artist, {name: 'Nirvana'})</tt>
-
-<b>To do a many search</b>
-
-<tt>Mnbackpack::Search.find(:many, {search: [{method: "artist",name: "Katy Perry"}, {method: "album",keyword: "Nevermind"}]})</tt>
-
-<b>To do an all search</b>
-<tt>Mnbackpack::Search.find(:all, {"IncludeExplicit" => false, :pagesize => 50, :keyword => "#{session[:search_text]}"})</tt>
-
-<b>To find a single album with tracks (Pass in mnet_id)</b>
-<tt>Mnbackpack::Album.albums(12345678)</tt>
 
 [<b>types</b>]	
 	album, artist, tracks
@@ -73,5 +60,5 @@
 	Album, Artist, IncludeExplicit, Keyword, Genre, Page, PageSize, Title
 
 
-
+Please see usage doc
 
