@@ -1,0 +1,85 @@
+Mnbackpack usage:
+
+OPTIONS for making query's
+
+artist, Artist, genre, Genre, title, Title, keyword, Keyword, rights, Rights, name, Name, PageSize, pagesize, Page, page, CC, cc, Addr, addr, ipString, ipstring, ISRC, isrc, AMGID, amgid, IncludeExplicit, include_explicit, MnetId, mnetid, mainArtistOnly, mainartistonly, Username, username, OrderID, orderid
+
+please refer to medianet documentation for values.
+
+
+SEARCH::
+	Sesarch for a single(album,artist,track)
+	Mnbackpack::Search.find(TYPE_STRING, OPTIONS_OBJ)
+
+		mn = Mnbackpack::Search.find(:album, {artist:"nirvana"})
+		mn = Mnbackpack::Search.find(:artist, {artist:"nirvana"})
+		mn = Mnbackpack::Search.find(:track, {artist:"nirvana"})
+
+	Search fom many(albums,artists,tracks)
+	Mnbackpack::Search.find(:many, SEARCH_OBJ{search: [{options},{options}]})
+
+		mn = Mnbackpack::Search.find(:many, {search:[ {method:'artist',artist:"nirvana"}, {method:'artist',artist:"rhiana"} ]})
+
+	Search all albums,artists,tracks based on a supplied keyword or just a listing of Medianet top listings based on sales.
+
+		Top Listed 20
+		mn = Mnbackpack::Search.find(:all, {"IncludeExplicit" => false, :pagesize => 20})
+
+		By Keyword
+		mn = Mnbackpack::Search.find(:all, {"IncludeExplicit" => false, :pagesize => 50, :keyword => "my_awesome_keyword"})
+
+ARTIST::
+	Find an artist in local database by id
+	artist = Mnbackpack::Artist.find(1892)
+	
+	Find all artists in local database
+	artist = Mnbackpack::Artist.all
+	
+	Find all albums by artist id
+	a = Mnbackpack::Artist.albums(1892)
+	
+	Find all tracks by artist id
+	a = Mnbackpack::Artist.tracks(1892)
+	
+ALBUM::
+	Find an album by mnetid
+	a = Mnbackpach::Album.get(58389145)
+	a = Mnbackpach::Album.find(58389145)
+	
+	Find an tracks by album mnetid
+	a = Mnbackpach::Album.tracks(58389145)
+	
+TRACK::
+	Find a track by mnetid
+	t = Mnbackpack::Track.get(4519547)
+	t = Mnbackpack::Track.find(4519547)
+	
+	Find track sample locations for listening
+	t = Mnbackpack::Track.find([4519547,21058])
+
+PURCHASE::
+	submit purchase
+	
+	purchase requires a logged in user {current_user} and a cart with lineItems.
+		purchase = Mnbackpack::Purchase.new
+		purchase.submit(user, cart)
+	Please see the Purchase Model for full detail.
+	
+	get order
+	purchase = Mnbackpack::Purchase.new
+	purchase.get_order(#order_number_in_receipt_email or in database)
+	
+	get_download_locations
+	purchase = Mnbackpack::Purchase.new
+	purchase.get_download_locations(#order_number_in_receipt_email or in database)
+	
+PARTNER::
+	
+	get or refill Medianet balance with card on file.
+	partner = Mnbackpack::Partner.new
+	partner.get_balnce
+	
+	refill current balance
+	partner = Mnbackpack::Partner.new
+	partner.refill(Integer)
+	

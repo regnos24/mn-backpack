@@ -9,7 +9,7 @@ class Mnbackpack::Album
     self.get(mnetid)
   end
   
-  def self.albums(mnetid)
+  def self.tracks(mnetid)
     mn = Mnbackpack::Request.new
     mn.single('Album.GetTracks', {"MnetId" => "#{mnetid}", "IncludeExplicit" => "false", "Pagesize" => "20"})
   end
